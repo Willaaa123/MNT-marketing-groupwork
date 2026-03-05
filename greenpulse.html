@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenPulse — Climate Action for the Next Generation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ── TOKENS ─────────────────────────────────────────── */
+  :root {
+    --forest:   #1a3a2a;
+    --moss:     #2d5a3d;
+    --sage:     #5a8a6a;
+    --leaf:     #7ab648;
+    --cream:    #f5f0e8;
+    --parchment:#ede5d0;
+    --earth:    #8b6914;
+    --terracotta:#c1440e;
+    --charcoal: #2a2820;
+    --mist:     rgba(245,240,232,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    background: var(--cream);
+    color: var(--charcoal);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* ── UTILITIES ──────────────────────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.75s ease, transform 0.75s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.22s; }
+  .reveal-delay-3 { transition-delay: 0.34s; }
+
+  /* ── NAV ────────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(26,58,42,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(122,182,72,0.15);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem; font-weight: 900;
+    color: var(--cream); letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--leaf); }
+  .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+  .nav-links a {
+    color: rgba(245,240,232,0.75);
+    text-decoration: none; font-size: 0.85rem;
+    font-weight: 500; letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--leaf); }
+  .nav-cta {
+    background: var(--leaf); color: var(--forest);
+    border: none; padding: 0.6rem 1.4rem;
+    border-radius: 100px; font-weight: 600;
+    font-size: 0.82rem; cursor: pointer;
+    letter-spacing: 0.02em; transition: background 0.2s, transform 0.15s;
+    text-transform: uppercase;
+  }
+  .nav-cta:hover { background: #91cf5a; transform: translateY(-1px); }
+
+  /* ── HERO ───────────────────────────────────────────── */
+  #hero {
+    position: relative; min-height: 100vh;
+    background: var(--forest);
+    display: flex; align-items: center;
+    overflow: hidden; padding: 8rem 3rem 5rem;
+  }
+
+  /* animated grain overlay */
+  #hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.45; pointer-events: none;
+  }
+
+  /* subtle organic blob */
+  .hero-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .blob-1 {
+    width: 55vw; height: 55vw;
+    background: radial-gradient(circle, rgba(90,138,106,0.28) 0%, transparent 70%);
+    top: -10%; right: -15%;
+  }
+  .blob-2 {
+    width: 35vw; height: 35vw;
+    background: radial-gradient(circle, rgba(122,182,72,0.15) 0%, transparent 70%);
+    bottom: -5%; left: 10%;
+  }
+
+  .hero-inner {
+    position: relative; z-index: 2;
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(122,182,72,0.15);
+    border: 1px solid rgba(122,182,72,0.35);
+    color: var(--leaf); font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.4rem 1rem; border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+  .hero-tag .dot {
+    width: 6px; height: 6px; background: var(--leaf);
+    border-radius: 50%; animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+  }
+
+  .hero-h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 5rem);
+    font-weight: 900; line-height: 1.06;
+    color: var(--cream); letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .hero-h1 em {
+    font-style: italic; color: var(--leaf);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem; line-height: 1.75;
+    color: rgba(245,240,232,0.65);
+    max-width: 480px; margin-bottom: 2.5rem;
+  }
+
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--leaf); color: var(--forest);
+    border: none; padding: 0.9rem 2.2rem;
+    border-radius: 100px; font-weight: 700;
+    font-size: 0.95rem; cursor: pointer;
+    letter-spacing: 0.01em; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary:hover { background: #91cf5a; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(122,182,72,0.3); }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(245,240,232,0.3);
+    color: var(--cream); padding: 0.9rem 2.2rem;
+    border-radius: 100px; font-weight: 500;
+    font-size: 0.95rem; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--cream); background: rgba(245,240,232,0.05); }
+
+  /* hero visual side */
+  .hero-visual {
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .earth-ring {
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    border: 1px solid rgba(122,182,72,0.2);
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    animation: slowSpin 40s linear infinite;
+  }
+  @keyframes slowSpin { to { transform: rotate(360deg); } }
+
+  .earth-inner {
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 35% 35%, #2d6e3e, #1a3a2a 60%, #0d2218);
+    position: relative; overflow: hidden;
+    animation: slowSpin 40s linear infinite reverse;
+    box-shadow: 0 0 60px rgba(45,90,61,0.5), inset 0 0 40px rgba(0,0,0,0.3);
+  }
+  .earth-land {
+    position: absolute; border-radius: 50%;
+    background: var(--leaf); opacity: 0.5;
+  }
+  .land-1 { width: 90px; height: 60px; top: 30%; left: 20%; border-radius: 40%; }
+  .land-2 { width: 60px; height: 80px; top: 20%; left: 55%; border-radius: 40%; }
+  .land-3 { width: 100px; height: 50px; top: 60%; left: 35%; border-radius: 40%; }
+  .land-4 { width: 45px; height: 45px; top: 55%; left: 65%; border-radius: 50%; }
+
+  .orbit-dot {
+    position: absolute; width: 12px; height: 12px;
+    background: var(--leaf); border-radius: 50%;
+    top: -6px; left: 50%; margin-left: -6px;
+    box-shadow: 0 0 15px rgba(122,182,72,0.8);
+  }
+  .orbit-label {
+    position: absolute; white-space: nowrap;
+    font-size: 0.7rem; color: var(--leaf);
+    font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .label-1 { top: -28px; left: 50%; transform: translateX(-50%); }
+  .label-2 { right: -80px; top: 50%; transform: translateY(-50%); }
+  .label-3 { bottom: -28px; left: 50%; transform: translateX(-50%); }
+  .label-4 { left: -90px; top: 50%; transform: translateY(-50%); }
+
+  /* ── STATS BAR ──────────────────────────────────────── */
+  #stats {
+    background: var(--charcoal);
+    padding: 2rem 3rem;
+    border-top: 1px solid rgba(122,182,72,0.15);
+  }
+  .stats-grid {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 2rem;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem; font-weight: 900;
+    color: var(--leaf); line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.78rem; color: rgba(245,240,232,0.55);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-top: 0.4rem;
+  }
+  .stat-divider {
+    width: 1px; background: rgba(245,240,232,0.08);
+    align-self: stretch;
+  }
+
+  /* ── PROBLEM ────────────────────────────────────────── */
+  #problem {
+    padding: 7rem 3rem;
+    background: var(--parchment);
+    position: relative; overflow: hidden;
+  }
+  #problem::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0; height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--cream));
+    pointer-events: none;
+  }
+  .section-label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--earth);
+    margin-bottom: 1rem;
+  }
+  .problem-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
+  }
+  .problem-left {}
+  .section-h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    font-weight: 900; line-height: 1.15;
+    color: var(--forest); letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .section-h2 em { font-style: italic; color: var(--terracotta); }
+
+  .problem-body {
+    font-size: 1rem; line-height: 1.8;
+    color: rgba(42,40,32,0.7); margin-bottom: 2rem;
+  }
+
+  .problem-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .pill {
+    background: rgba(26,58,42,0.08);
+    border: 1px solid rgba(26,58,42,0.15);
+    color: var(--forest); font-size: 0.8rem;
+    padding: 0.4rem 1rem; border-radius: 100px; font-weight: 500;
+  }
+
+  .problem-quote {
+    background: var(--forest); color: var(--cream);
+    border-radius: 20px; padding: 2.5rem;
+    position: relative;
+  }
+  .problem-quote blockquote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; font-style: italic;
+    line-height: 1.65; margin-bottom: 1.5rem;
+  }
+  .problem-quote cite {
+    font-size: 0.8rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--leaf);
+    font-style: normal; font-weight: 600;
+  }
+  .quote-icon {
+    font-family: 'Playfair Display', serif;
+    font-size: 6rem; line-height: 0.5;
+    color: var(--leaf); opacity: 0.3;
+    position: absolute; top: 1.5rem; right: 2rem;
+  }
+
+  /* ── FEATURES ───────────────────────────────────────── */
+  #features {
+    padding: 7rem 3rem;
+    background: var(--cream);
+  }
+  .features-header {
+    max-width: 1200px; margin: 0 auto 4rem;
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+  .features-grid {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .feature-card {
+    background: var(--forest); border-radius: 20px;
+    padding: 2.5rem; position: relative; overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .feature-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(26,58,42,0.25); }
+  .feature-card:nth-child(2) { background: var(--moss); }
+  .feature-card:nth-child(3) { background: var(--charcoal); }
+
+  .feature-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at top right, rgba(122,182,72,0.1), transparent 60%);
+    pointer-events: none;
+  }
+
+  .feature-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: rgba(122,182,72,0.15);
+    border: 1px solid rgba(122,182,72,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin-bottom: 1.8rem;
+  }
+  .feature-num {
+    position: absolute; top: 2rem; right: 2rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem; font-weight: 900; line-height: 1;
+    color: rgba(122,182,72,0.1);
+  }
+  .feature-h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem; font-weight: 700;
+    color: var(--cream); margin-bottom: 0.75rem;
+  }
+  .feature-p {
+    font-size: 0.9rem; line-height: 1.75;
+    color: rgba(245,240,232,0.6);
+  }
+  .feature-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    color: var(--leaf); font-size: 0.82rem;
+    font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-top: 1.5rem;
+    text-decoration: none; transition: gap 0.2s;
+  }
+  .feature-link:hover { gap: 0.8rem; }
+
+  /* ── HOW IT WORKS ───────────────────────────────────── */
+  #how {
+    padding: 7rem 3rem;
+    background: var(--forest);
+    position: relative; overflow: hidden;
+  }
+  #how .section-label { color: var(--leaf); }
+  #how .section-h2 { color: var(--cream); }
+
+  .how-inner {
+    max-width: 1200px; margin: 0 auto;
+  }
+  .how-header { margin-bottom: 4rem; }
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0; position: relative;
+  }
+  .steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 3rem; left: calc(100%/6); right: calc(100%/6);
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(122,182,72,0.4), transparent);
+  }
+
+  .step-item { padding: 0 2rem; text-align: center; }
+  .step-num {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 1px solid rgba(122,182,72,0.4);
+    background: rgba(122,182,72,0.08);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 2rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 900; color: var(--leaf);
+    position: relative; z-index: 1;
+  }
+  .step-h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--cream); margin-bottom: 0.75rem;
+  }
+  .step-p {
+    font-size: 0.88rem; line-height: 1.75;
+    color: rgba(245,240,232,0.55);
+  }
+
+  /* ── TESTIMONIAL ────────────────────────────────────── */
+  #testimonial {
+    padding: 7rem 3rem;
+    background: var(--parchment);
+  }
+  .testimonial-inner {
+    max-width: 900px; margin: 0 auto; text-align: center;
+  }
+  .testimonial-stars {
+    font-size: 1.2rem; color: var(--leaf);
+    letter-spacing: 0.2rem; margin-bottom: 2rem;
+  }
+  .testimonial-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-style: italic; line-height: 1.6;
+    color: var(--forest); margin-bottom: 2.5rem;
+  }
+  .testimonial-author {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1rem;
+  }
+  .author-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--sage), var(--moss));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 700; color: var(--cream);
+  }
+  .author-info {}
+  .author-name {
+    font-weight: 600; font-size: 0.9rem; color: var(--charcoal);
+  }
+  .author-title {
+    font-size: 0.78rem; color: rgba(42,40,32,0.5);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SIGNUP ─────────────────────────────────────────── */
+  #signup {
+    padding: 7rem 3rem;
+    background: var(--cream);
+  }
+  .signup-inner {
+    max-width: 680px; margin: 0 auto; text-align: center;
+  }
+  .signup-inner .section-h2 { margin-bottom: 1rem; }
+  .signup-sub {
+    font-size: 1rem; line-height: 1.7;
+    color: rgba(42,40,32,0.6); margin-bottom: 2.5rem;
+  }
+  .signup-form {
+    display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
+  }
+  .signup-input {
+    flex: 1; min-width: 240px;
+    background: var(--parchment);
+    border: 1px solid rgba(26,58,42,0.15);
+    border-radius: 100px; padding: 0.85rem 1.5rem;
+    font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+    color: var(--charcoal); outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .signup-input::placeholder { color: rgba(42,40,32,0.35); }
+  .signup-input:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(90,138,106,0.15);
+  }
+  .signup-btn {
+    background: var(--forest); color: var(--cream);
+    border: none; padding: 0.85rem 2rem;
+    border-radius: 100px; font-weight: 600;
+    font-size: 0.95rem; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .signup-btn:hover {
+    background: var(--moss);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(26,58,42,0.2);
+  }
+  .signup-note {
+    font-size: 0.75rem; color: rgba(42,40,32,0.4);
+    margin-top: 1rem; letter-spacing: 0.02em;
+  }
+
+  /* success state */
+  .signup-success {
+    display: none;
+    background: rgba(122,182,72,0.1);
+    border: 1px solid rgba(122,182,72,0.3);
+    border-radius: 12px; padding: 1.25rem 2rem;
+    color: var(--moss); font-weight: 500; font-size: 0.95rem;
+  }
+
+  /* ── FOOTER ─────────────────────────────────────────── */
+  footer {
+    background: var(--charcoal);
+    padding: 4rem 3rem 2rem;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+  }
+  .footer-top {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 4rem; margin-bottom: 4rem;
+  }
+  .footer-brand .nav-logo { font-size: 1.5rem; }
+  .footer-desc {
+    font-size: 0.85rem; line-height: 1.75;
+    color: rgba(245,240,232,0.45); margin-top: 1rem; max-width: 240px;
+  }
+  .footer-col-title {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(245,240,232,0.35);
+    margin-bottom: 1.2rem;
+  }
+  .footer-links { list-style: none; }
+  .footer-links li { margin-bottom: 0.65rem; }
+  .footer-links a {
+    color: rgba(245,240,232,0.55); text-decoration: none;
+    font-size: 0.88rem; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--leaf); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(245,240,232,0.07);
+    padding-top: 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-copy {
+    font-size: 0.78rem; color: rgba(245,240,232,0.3);
+    letter-spacing: 0.03em;
+  }
+  .sdg-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(122,182,72,0.1);
+    border: 1px solid rgba(122,182,72,0.2);
+    border-radius: 100px; padding: 0.4rem 1rem;
+    font-size: 0.72rem; font-weight: 600;
+    color: var(--leaf); letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  /* ── RESPONSIVE ─────────────────────────────────────── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { padding: 7rem 1.5rem 4rem; }
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    #stats { padding: 2rem 1.5rem; }
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .stat-divider { display: none; }
+    .problem-inner, .features-grid, .steps-grid, .footer-top {
+      grid-template-columns: 1fr;
+    }
+    section { padding: 5rem 1.5rem !important; }
+    .steps-grid::before { display: none; }
+    .features-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Green<span>Pulse</span></div>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#features">Solution</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#testimonial">Stories</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Join the Movement</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-blob blob-1"></div>
+  <div class="hero-blob blob-2"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag"><span class="dot"></span> UN SDG 13 — Climate Action</div>
+      <h1 class="hero-h1">The planet<br>needs a new<br><em>generation</em><br>of action.</h1>
+      <p class="hero-sub">GreenPulse empowers students and communities with real-time climate data, actionable insights, and a global network of changemakers fighting for our shared future.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">
+          Get Early Access ↗
+        </button>
+        <button class="btn-ghost" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+          See the Platform
+        </button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="earth-ring">
+        <span class="orbit-dot"></span>
+        <span class="orbit-label label-1">CO₂ Monitor</span>
+        <span class="orbit-label label-2">Alerts</span>
+        <span class="orbit-label label-3">Community</span>
+        <span class="orbit-label label-4">Analytics</span>
+        <div class="earth-inner">
+          <div class="earth-land land-1"></div>
+          <div class="earth-land land-2"></div>
+          <div class="earth-land land-3"></div>
+          <div class="earth-land land-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<section id="stats">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <div class="stat-num" data-target="1.5">0</div>
+      <div class="stat-label">°C — Critical warming threshold</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="stat-num" data-target="422">0</div>
+      <div class="stat-label">PPM CO₂ in the atmosphere (2024)</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="stat-num" data-target="3.6">0</div>
+      <div class="stat-label">Bn people at risk from climate impacts</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item reveal reveal-delay-3">
+      <div class="stat-num" data-target="2050">0</div>
+      <div class="stat-label">Net-zero target year we must meet</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="problem-inner">
+    <div class="problem-left reveal">
+      <div class="section-label">The Problem</div>
+      <h2 class="section-h2">We know the <em>crisis.</em><br>We lack the tools to act.</h2>
+      <p class="problem-body">Young people care deeply about climate change — yet feel powerless. The data exists. The science is clear. But awareness rarely turns into sustained, measurable local action. The gap isn't knowledge. It's infrastructure.</p>
+      <div class="problem-pills">
+        <span class="pill">Fragmented data</span>
+        <span class="pill">Eco-anxiety</span>
+        <span class="pill">No community tools</span>
+        <span class="pill">Low individual impact</span>
+        <span class="pill">Greenwashing overload</span>
+      </div>
+    </div>
+    <div class="problem-right reveal reveal-delay-2">
+      <div class="problem-quote">
+        <div class="quote-icon">"</div>
+        <blockquote>"Climate change is the defining challenge of our time, yet we send our young people into the world without the tools to respond at scale."</blockquote>
+        <cite>— António Guterres, UN Secretary-General</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="features-header">
+    <div>
+      <div class="section-label">Our Solution</div>
+      <h2 class="section-h2" style="max-width:420px">Three pillars.<br>One <em>movement.</em></h2>
+    </div>
+    <p style="max-width:300px;color:rgba(42,40,32,0.55);font-size:0.9rem;line-height:1.75;">
+      GreenPulse gives you the data, community, and tools to move from awareness to action — in your campus, city, and beyond.
+    </p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">🌡️</div>
+      <div class="feature-num">01</div>
+      <h3 class="feature-h3">Live Climate Dashboard</h3>
+      <p class="feature-p">Track real-time CO₂ levels, temperature anomalies, and extreme weather events for any location on Earth. Data pulled from NASA, NOAA, and Copernicus.</p>
+      <a href="#signup" class="feature-link">Explore Data →</a>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-icon">🤝</div>
+      <div class="feature-num">02</div>
+      <h3 class="feature-h3">Community Action Hub</h3>
+      <p class="feature-p">Connect with student changemakers globally. Launch local campaigns, join challenges, and measure your collective carbon reduction — together.</p>
+      <a href="#signup" class="feature-link">Join a Group →</a>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-icon">📊</div>
+      <div class="feature-num">03</div>
+      <h3 class="feature-h3">Personal Impact Tracker</h3>
+      <p class="feature-p">Set goals. Log actions. See your real carbon footprint reduction in kg of CO₂ — not vague promises. Gamified streaks keep you accountable.</p>
+      <a href="#signup" class="feature-link">Track Impact →</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="how-inner">
+    <div class="how-header">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-h2">From sign-up to<br><em>climate hero</em> in three steps.</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-item reveal">
+        <div class="step-num">1</div>
+        <h3 class="step-h3">Create Your Profile</h3>
+        <p class="step-p">Join in 60 seconds. Set your location, causes you care about, and your first carbon reduction goal. We personalise your experience from day one.</p>
+      </div>
+      <div class="step-item reveal reveal-delay-1">
+        <div class="step-num">2</div>
+        <h3 class="step-h3">Connect & Discover</h3>
+        <p class="step-p">Find local climate groups, join university campaigns, and access live data about your city's environment. Real community, real impact.</p>
+      </div>
+      <div class="step-item reveal reveal-delay-2">
+        <div class="step-num">3</div>
+        <h3 class="step-h3">Act & Measure</h3>
+        <p class="step-p">Log daily actions — from cycling to work to organising litter picks. Watch your personal CO₂ reduction grow alongside thousands of others.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section id="testimonial">
+  <div class="testimonial-inner reveal">
+    <div class="testimonial-stars">★ ★ ★ ★ ★</div>
+    <p class="testimonial-quote">"GreenPulse turned my climate anxiety into something productive. Within a week I'd joined a local group, tracked my footprint, and helped plant 40 trees through our university campaign. I finally feel like my actions matter."</p>
+    <div class="testimonial-author">
+      <div class="author-avatar">A</div>
+      <div class="author-info">
+        <div class="author-name">Aisha Okafor</div>
+        <div class="author-title">Environmental Science Student, University of Birmingham</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNUP -->
+<section id="signup">
+  <div class="signup-inner reveal">
+    <div class="section-label">Early Access</div>
+    <h2 class="section-h2">Be among the<br>first to <em>act.</em></h2>
+    <p class="signup-sub">Join 4,200+ students on the waitlist. Get early access, exclusive climate reports, and help shape the platform with your feedback.</p>
+    <div class="signup-form" id="signupForm">
+      <input class="signup-input" type="email" id="emailInput" placeholder="your@email.com" autocomplete="email">
+      <button class="signup-btn" onclick="handleSignup()">Join the Waitlist</button>
+    </div>
+    <div class="signup-success" id="successMsg">
+      🌿 You're on the list! Check your inbox for a confirmation — we'll be in touch soon.
+    </div>
+    <p class="signup-note">No spam, ever. Unsubscribe anytime. We're GDPR compliant.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo">Green<span>Pulse</span></div>
+        <p class="footer-desc">A student startup building climate infrastructure for the next generation of changemakers. UN SDG 13 aligned.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <ul class="footer-links">
+          <li><a href="#">Dashboard</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Impact Tracker</a></li>
+          <li><a href="#">Climate Data</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Our Mission</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Resources</div>
+        <ul class="footer-links">
+          <li><a href="#">Climate Science</a></li>
+          <li><a href="#">Action Guides</a></li>
+          <li><a href="#">API Access</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 GreenPulse. Built for the planet, by students.</p>
+      <div class="sdg-badge">🌍 UN SDG 13 — Climate Action</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── SCROLL REVEAL ─────────────────────────── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── COUNTER ANIMATION ─────────────────────── */
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.target);
+    const isFloat = target % 1 !== 0;
+    const isBig = target > 100;
+    const duration = 1800;
+    const start = performance.now();
+
+    function update(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4); // ease-out quart
+      const val = target * eased;
+      el.textContent = isFloat ? val.toFixed(1) : Math.round(val).toLocaleString();
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('[data-target]').forEach(animateCounter);
+        statsObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  statsObserver.observe(document.getElementById('stats'));
+
+  /* ── EMAIL SIGNUP ──────────────────────────── */
+  function handleSignup() {
+    const input = document.getElementById('emailInput');
+    const val = input.value.trim();
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRx.test(val)) {
+      input.style.borderColor = '#c1440e';
+      input.style.boxShadow = '0 0 0 3px rgba(193,68,14,0.15)';
+      input.focus();
+      setTimeout(() => {
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
+      }, 2000);
+      return;
+    }
+
+    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+  }
+
+  document.getElementById('emailInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSignup();
+  });
+</script>
+</body>
+</html>
